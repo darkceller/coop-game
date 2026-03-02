@@ -201,30 +201,36 @@
             }
         }
 
-        function submitForm() {
-            const name = document.getElementById('user-name').value;
-            const id = document.getElementById('user-id').value;
+       function submitForm() {
+    const name = document.getElementById('user-name').value;
+    const id = document.getElementById('user-id').value;
+    const scriptURL = '這裡貼上你剛剛複製的GAS網頁應用程式URL'; // <--- 改這裡
 
-            if (!name || !id) {
-                alert("請完整填寫姓名與社員編號");
-                return;
-            }
+    if (!name || !id) {
+        alert("請完整填寫姓名與社員編號");
+        return;
+    }
 
-            if (!/^\d+$/.test(id)) {
-                alert("社員編號請輸入數字");
-                return;
-            }
+    // 顯示讀取中，防止重複點擊
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerText = "資料上傳中...";
 
-            // 模擬資料輸出
-            console.log("--- 抽獎資料提交 ---");
-            console.log("姓名:", name);
-            console.log("社員編號:", id);
-            console.log("得分:", score);
-            console.log("------------------");
-
-            alert("資料已成功記錄，祝您中獎！");
-            location.reload(); // 提交後重置
-        }
+    fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify({ name: name, id: id, score: score }),
+    })
+    .then(response => {
+        alert("資料已成功記錄，祝您中獎！");
+        location.reload(); 
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        alert("上傳失敗，請檢查網路連線。");
+        btn.disabled = false;
+        btn.innerText = "提交資料";
+    });
+}
     </script>
 </body>
 </html>
