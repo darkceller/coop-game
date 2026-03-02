@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合作社教育知識挑戰賽</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #4caf50;
+            --bg-color: #f1f8e9;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100-vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--white);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .hidden { display: none !important; }
+
+        h1 { color: var(--primary-color); margin-bottom: 20px; }
+        p { line-height: 1.6; }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn:hover { background-color: var(--secondary-color); }
+
+        /* Quiz Styles */
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: none;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover { border-color: var(--secondary-color); background-color: #f9fff9; }
+
+        /* Form Styles */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary-color);
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .score-display { font-size: 48px; font-weight: bold; color: var(--primary-color); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="start-screen">
+            <h1>🤝 合作社教育<br>知識挑戰賽</h1>
+            <p>歡迎參加！本測驗共有 10 題。<br><strong>正確率達 60% 以上</strong>即可參加抽獎。</p>
+            <button class="btn" onclick="startQuiz()">開始挑戰</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+            <p id="question-number" style="color: #666;"></p>
+            <h3 id="question-text">題目載入中...</h3>
+            <div id="options-container"></div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h2>挑戰結束</h2>
+            <div class="score-display" id="final-score">0</div>
+            <p id="result-msg"></p>
+            
+            <div id="lottery-form" class="hidden">
+                <hr>
+                <h3>🎁 恭喜獲得抽獎資格</h3>
+                <p>請填寫基本資料以利中獎聯繫：</p>
+                <input type="text" id="user-name" placeholder="真實姓名" required>
+                <input type="text" id="user-id" placeholder="社員編號 (數字)" pattern="\d*" required>
+                <button class="btn" onclick="submitForm()">提交資料</button>
+            </div>
+
+            <button id="retry-btn" class="btn hidden" onclick="location.reload()">重新挑戰</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "合作社的第一項原則是？", a: ["公開與自願的社員制", "一人一票制", "盈餘全數分紅", "政府全額補助"], correct: 0 },
+            { q: "在合作社的民主管理中，投票權通常如何計算？", a: ["按出資比例", "一人一票", "按年資", "按學歷"], correct: 1 },
+            { q: "合作社的盈餘分配主要是依據社員的什麼？", a: ["認股金額", "利用額(交易量)", "報到順序", "抽籤決定"], correct: 1 },
+            { q: "合作社是一家以什麼為核心的組織？", a: ["資本", "人", "股票市場", "政府公信力"], correct: 1 },
+            { q: "下列何者是合作社發展的「社間合作」精神？", a: ["併吞競爭對手", "各類合作社相互支援", "禁止與他社往來", "僅與外資合作"], correct: 1 },
+            { q: "合作社的「股份」是否可以在股票市場自由買賣？", a: ["可以", "不行，通常由合作社收回", "視股價而定", "僅限晚上交易"], correct: 1 },
+            { q: "合作社的最高權力機構是？", a: ["理事會", "監事會", "社員大會", "總經理"], correct: 2 },
+            { q: "「自治與獨立」原則是指合作社在與政府協議時應？", a: ["完全聽命", "維持合作社自主性", "交出所有權", "放棄投票權"], correct: 1 },
+            { q: "合作社強調對誰的教育與訓練？", a: ["僅限高層", "社員、職員與社會大眾", "僅限政府官員", "不需教育"], correct: 1 },
+            { q: "合作社第七項原則「關懷地區社會」是指？", a: ["透過社員核可的政策，促進社區發展", "在社區廣發傳單", "免費提供所有商品", "搬離社區"], correct: 0 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const qData = questions[currentQuestion];
+            document.getElementById('question-number').innerText = `第 ${currentQuestion + 1} / 10 題`;
+            document.getElementById('question-text').innerText = qData.q;
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            qData.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('progress').style.width = `${(currentQuestion / 10) * 100}%`;
+        }
+
+        function handleAnswer(choice) {
+            if (choice === questions[currentQuestion].correct) {
+                score += 10;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+
+            if (score >= 60) {
+                document.getElementById('result-msg').innerText = "太棒了！您對合作社非常了解！";
+                document.getElementById('lottery-form').classList.remove('hidden');
+            } else {
+                document.getElementById('result-msg').innerText = "再接再厲！正確率未達 60%，無法參加抽獎。";
+                document.getElementById('retry-btn').classList.remove('hidden');
+            }
+        }
+
+        function submitForm() {
+            const name = document.getElementById('user-name').value;
+            const id = document.getElementById('user-id').value;
+
+            if (!name || !id) {
+                alert("請完整填寫姓名與社員編號");
+                return;
+            }
+
+            if (!/^\d+$/.test(id)) {
+                alert("社員編號請輸入數字");
+                return;
+            }
+
+            // 模擬資料輸出
+            console.log("--- 抽獎資料提交 ---");
+            console.log("姓名:", name);
+            console.log("社員編號:", id);
+            console.log("得分:", score);
+            console.log("------------------");
+
+            alert("資料已成功記錄，祝您中獎！");
+            location.reload(); // 提交後重置
+        }
+    </script>
+</body>
+</html>
