@@ -3,109 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>合作社教育知識挑戰賽</title>
+    <title>主婦聯盟中壢站-教育知識挑戰賽</title>
     <style>
-        :root { --primary-color: #2e7d32; --secondary-color: #4caf50; --bg-color: #f1f8e9; --text-color: #333; --white: #ffffff; }
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .container { background-color: var(--white); width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        :root { 
+            --primary-color: #6d8e46; /* LOGO綠 */
+            --secondary-color: #fbd26a; /* LOGO黃 */
+            --bg-color: #f9fbe7; 
+            --error-color: #e57373;
+            --white: #ffffff; 
+        }
+        body { 
+            font-family: "Microsoft JhengHei", sans-serif; 
+            background: linear-gradient(135deg, #f9fbe7 0%, #dcedc8 100%); 
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; 
+        }
+        .container { 
+            background: var(--white); width: 100%; max-width: 480px; padding: 30px; border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; 
+        }
         .hidden { display: none !important; }
-        h1 { color: var(--primary-color); margin-bottom: 20px; font-size: 24px; }
-        .btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-size: 16px; cursor: pointer; transition: background 0.3s; margin-top: 20px; width: 100%; }
-        .btn:hover { background-color: var(--secondary-color); }
-        .btn:disabled { background-color: #ccc; cursor: not-allowed; }
-        .option-btn { display: block; width: 100%; text-align: left; padding: 15px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 10px; background: none; cursor: pointer; font-size: 15px; transition: all 0.2s; }
-        .option-btn:hover { border-color: var(--secondary-color); background-color: #f9fff9; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-        .progress-bar { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--secondary-color); width: 0%; transition: width 0.3s; }
-        .score-display { font-size: 48px; font-weight: bold; color: var(--primary-color); }
+        
+        /* LOGO 樣式 */
+        .logo { width: 120px; height: 120px; border-radius: 50%; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        h1 { color: var(--primary-color); font-size: 24px; margin: 10px 0; }
+        .btn { 
+            background-color: var(--primary-color); color: white; border: none; padding: 14px; 
+            border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; 
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* 選項 */
+        .option-btn { 
+            display: block; width: 100%; text-align: left; padding: 15px; margin: 10px 0; 
+            border: 2px solid #eee; border-radius: 12px; background: white; cursor: pointer; transition: 0.2s; 
+        }
+        .option-btn.correct { background-color: #e8f5e9; border-color: #81c784; color: #2e7d32; font-weight: bold; }
+        .option-btn.wrong { background-color: #ffebee; border-color: #e57373; color: #c62828; }
+
+        /* 解析區塊 */
+        #feedback-area { 
+            margin-top: 20px; padding: 15px; border-radius: 10px; text-align: left; 
+            background: #fdfae5; border-left: 5px solid var(--secondary-color); 
+        }
+        .progress-bar { height: 8px; background: #eee; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; transition: 0.4s; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div id="start-screen">
-            <h1>🤝 合作社教育<br>知識挑戰賽</h1>
-            <p>歡迎參加！本測驗共有 10 題。<br><strong>正確率達 60% 以上</strong>即可參加抽獎。</p>
+            <img src="https://raw.githubusercontent.com/darkceller/coop-game/main/307175690_400763828917803_4118674609104126855_n.jpg" class="logo" alt="主婦聯盟中壢站">
+            <h1>教育知識挑戰賽</h1>
+            <p>歡迎社員參加！從 20 題庫隨機抽 10 題。<br>答對 6 題以上即可抽獎！</p>
             <button class="btn" onclick="startQuiz()">開始挑戰</button>
         </div>
 
         <div id="quiz-screen" class="hidden">
             <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
-            <p id="question-number" style="color: #666; font-size: 14px;"></p>
-            <h3 id="question-text" style="margin: 10px 0 20px 0;">載入中...</h3>
+            <p id="question-number" style="color: #666; font-size: 13px;"></p>
+            <h3 id="question-text"></h3>
             <div id="options-container"></div>
+            
+            <div id="feedback-area" class="hidden">
+                <p id="feedback-text" style="font-size: 14px; line-height: 1.5;"></p>
+                <button class="btn" onclick="goToNextQuestion()">下一題</button>
+            </div>
         </div>
 
         <div id="result-screen" class="hidden">
-            <h2>挑戰結束</h2>
-            <div class="score-display" id="final-score">0</div>
+            <h2 id="final-status">挑戰結束</h2>
+            <div style="font-size: 50px; font-weight: bold; color: var(--primary-color); margin: 15px 0;" id="final-score">0</div>
             <p id="result-msg"></p>
-            
             <div id="lottery-form" class="hidden">
-                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-                <h3>🎁 恭喜獲得抽獎資格</h3>
-                <input type="text" id="user-name" placeholder="真實姓名">
-                <input type="text" id="user-id" placeholder="社員編號 (數字)">
-                <button class="btn" id="submit-btn" onclick="submitForm()">提交資料</button>
+                <input type="text" id="user-name" placeholder="社員姓名">
+                <input type="text" id="user-id" placeholder="社員編號">
+                <button class="btn" id="submit-btn" onclick="submitForm()">送出資料</button>
             </div>
             <button id="retry-btn" class="btn hidden" onclick="location.reload()">重新挑戰</button>
         </div>
     </div>
 
     <script>
-        // 設定你的 GAS 網址
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwe1pa3bClEhXZURY8G586Za8C4MAeg8Fzw__W0AT25eG-4kEKxTLj5kXfIyMmjZKgipw/exec'; 
 
-        const questions = [
-            { q: "合作社的第一項原則是？", a: ["公開與自願的社員制", "一人一票制", "盈餘全數分紅", "政府全額補助"], correct: 0 },
-            { q: "在合作社的民主管理中，投票權通常如何計算？", a: ["按出資比例", "一人一票制", "按年資", "按學歷"], correct: 1 },
-            { q: "合作社的盈餘分配主要是依據社員的什麼？", a: ["認股金額", "利用額(交易量)", "報到順序", "抽籤決定"], correct: 1 },
-            { q: "合作社是一家以什麼為核心的組織？", a: ["資本", "人", "股票市場", "政府公信力"], correct: 1 },
-            { q: "下列何者是合作社發展的「社間合作」精神？", a: ["併吞競爭對手", "各類合作社相互支援", "禁止與他社往來", "僅與外資合作"], correct: 1 },
-            { q: "合作社的「股份」是否可以在股票市場自由買賣？", a: ["可以", "不行，通常由合作社收回", "視股價而定", "僅限晚上交易"], correct: 1 },
-            { q: "合作社的最高權力機構是？", a: ["理事會", "監事會", "社員大會", "總經理"], correct: 2 },
-            { q: "「自治與獨立」原則是指合作社在與政府協議時應？", a: ["完全聽命", "維持合作社自主性", "交出所有權", "放棄投票權"], correct: 1 },
-            { q: "合作社強調對誰的教育與訓練？", a: ["僅限高層", "社員、職員與社會大眾", "僅限政府官員", "不需教育"], correct: 1 },
-            { q: "合作社第七項原則「關懷地區社會」是指？", a: ["透過社員核可的政策，促進社區發展", "在社區廣發傳單", "免費提供所有商品", "搬離社區"], correct: 0 }
-            { q: "主婦聯盟合作社的前身是什麼？", a: ["綠主張共同購買中心", "綠色和平組織", "主婦商場", "農委會"], correct: 0 },
-            { q: "合作社推動「共同購買」的核心價值不包含下列哪一項？", a: ["支持友善農法", "追求市場最低價", "減塑行動", "維護社員健康"], correct: 2 },
-            { q: "在主婦聯盟合作社中，出資加入並利用的人稱為？", a: ["顧客", "股東", "社員", "會員"], correct: 2 },
-            { q: "合作社為了減少食物浪費與計畫性生產，推行什麼制度？", a: ["預估生產(預購)", "買一送一", "限時大特價", "隨機出貨"], correct: 0 },
-            { q: "主婦聯盟合作社標誌上的「綠主張」精神核心為何？", a: ["惜物與永續", "大量消費", "只買進口貨", "越貴越好"], correct: 0 },
-            { q: "支持在地農業，減少運輸碳足跡的行為稱為？", a: ["地產地消", "國際貿易", "進口替代", "農業補貼"], correct: 0 },
-            { q: "主婦聯盟合作社長期推動的環境行動為何？", a: ["回收玻璃瓶與減塑", "廣發紙本傳單", "推廣一次性餐具", "增加塑膠包裝"], correct: 0 },
-            { q: "「共同購買」精神最早是從哪個國家傳入台灣的？", a: ["美國", "英國", "日本", "德國"], correct: 2 },
-            { q: "加入合作社時，為了營運資金所需繳納的款項稱為？", a: ["入會費", "股金", "保護費", "年費"], correct: 1 },
-            { q: "合作社的社員可以在哪裡進行社群交流與取貨？", a: ["便利商店", "百貨公司", "取貨站或取貨班", "一般大賣場"], correct: 2 }
-];
-// 在 script 標籤內定義變數
-let questions = []; 
-let currentQuestion = 0;
-let score = 0;
-function startQuiz() {
-    // 這是隨機洗牌並抽取 10 題的關鍵邏輯
-    questions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 10);
-    currentQuestion = 0;
-    score = 0;
-    document.getElementById('start-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    showQuestion();
-}
-        
-        let currentQuestion = 0;
+        const allQuestions = [
+            { q: "合作社的第一項原則是？", a: ["公開與自願的社員制", "一人一票制", "盈餘全數分紅", "政府全額補助"], correct: 0, reason: "合作社是自願組織，向所有願意承擔責任的人開放。" },
+            { q: "在合作社的民主管理中，投票權通常如何計算？", a: ["按出資比例", "一人一票制", "按年資", "按學歷"], correct: 1, reason: "不論出資多寡，每位社員均平等享有一票。" },
+            { q: "合作社的盈餘分配主要是依據社員的什麼？", a: ["認股金額", "利用額(交易量)", "報到順序", "抽籤決定"], correct: 1, reason: "盈餘是根據您對合作社產品的「利用程度」來返還。" },
+            { q: "合作社是一家以什麼為核心的組織？", a: ["資本", "人", "股票市場", "政府公信力"], correct: 1, reason: "合作社的核心在於「人」的結合與互助，而非追求利潤極大化。" },
+            { q: "下列何者是合作社發展的「社間合作」精神？", a: ["併吞競爭對手", "各類合作社相互支援", "禁止與他社往來", "僅與外資合作"], correct: 1, reason: "透過與其他合作社合作，能更有效地服務社員並強化運動力量。" },
+            { q: "合作社的「股份」是否可以在股票市場自由買賣？", a: ["可以", "不行，通常由合作社收回", "視股價而定", "僅限晚上交易"], correct: 1, reason: "股金非投機商品，離開時按原價領回。" },
+            { q: "合作社的最高權力機構是？", a: ["理事會", "監事會", "社員大會", "總經理"], correct: 2, reason: "社員大會是最高決策機關，展現社員共治。" },
+            { q: "「自治與獨立」原則是指合作社在與政府協議時應？", a: ["完全聽命", "維持合作社自主性", "交出所有權", "放棄投票權"], correct: 1, reason: "必須確保由社員民主控制，並維持自主性。" },
+            { q: "合作社強調對誰的教育與訓練？", a: ["僅限高層", "社員、職員與社會大眾", "僅限政府官員", "不需教育"], correct: 1, reason: "教育能推廣合作理念，是合作社發展的根基。" },
+            { q: "合作社第七項原則「關懷地區社會」是指？", a: ["透過社員核可政策，促進社區發展", "在社區廣發傳單", "免費提供所有商品", "搬離社區"], correct: 0, reason: "合作社致力於其所在社區的永續發展。" },
+            { q: "主婦聯盟合作社的前身是什麼？", a: ["綠主張共同購買中心", "綠色和平", "主婦商場", "農委會"], correct: 0, reason: "1993年由主婦發起的「共同購買」是合作社的起點。" },
+            { q: "合作社推動「共同購買」的核心價值不包含？", a: ["支持友善農法", "追求市場最低價", "減塑行動", "維護社員健康"], correct: 1, reason: "我們追求合理價格與安心品質，而非削價競爭。" },
+            { q: "在主婦聯盟合作社中，出資加入並利用的人稱為？", a: ["顧客", "股東", "社員", "會員"], correct: 2, reason: "社員是共同擁有者、經營者也是利用人。" },
+            { q: "合作社為了減少食物浪費與計畫性生產，推行什麼制度？", a: ["預估生產(預購)", "買一送一", "限時特價", "隨機出貨"], correct: 0, reason: "預購能讓生產者安心耕作，避免剩食浪費。" },
+            { q: "主婦聯盟合作社標誌上的「綠主張」精神核心為何？", a: ["惜物與永續", "大量消費", "只買進口貨", "越貴越好"], correct: 0, reason: "代表了對地球友善且永續的生活主張。" },
+            { q: "支持在地農業，減少運輸碳足跡的行為稱為？", a: ["地產地消", "國際貿易", "進口替代", "農業補貼"], correct: 0, reason: "選用在地食材能大幅降低運輸造成的排碳。" },
+            { q: "主婦聯盟合作社長期推動的環境行動為何？", a: ["回收玻璃瓶與減塑", "廣發紙本傳單", "推廣一次性餐具", "增加塑膠包裝"], correct: 0, reason: "回收醬油瓶等行動，實踐了資源循環的理想。" },
+            { q: "「共同購買」精神最早是從哪個國家傳入台灣的？", a: ["美國", "英國", "日本", "德國"], correct: 2, reason: "深受日本生協運動的啟發，開啟了台灣的共購模式。" },
+            { q: "加入合作社時，為了營運資金所需繳納的款項稱為？", a: ["入會費", "股金", "保護費", "年費"], correct: 1, reason: "股金是社員對合作社的共同投資。" },
+            { q: "合作社的社員可以在哪裡進行社群交流與取貨？", a: ["便利商店", "百貨公司", "取貨站或取貨班", "大賣場"], correct: 2, reason: "站所是推廣生活理念與社員交流的據點。" }
+        ];
+
+        let questions = []; 
+        let currentIdx = 0;
         let score = 0;
+        let answered = false;
 
         function startQuiz() {
+            questions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 10);
+            currentIdx = 0;
+            score = 0;
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
             showQuestion();
         }
 
         function showQuestion() {
-            const qData = questions[currentQuestion];
-            document.getElementById('question-number').innerText = `第 ${currentQuestion + 1} / 10 題`;
+            answered = false;
+            const qData = questions[currentIdx];
+            document.getElementById('question-number').innerText = `題號 ${currentIdx + 1} / 10`;
             document.getElementById('question-text').innerText = qData.q;
+            document.getElementById('feedback-area').classList.add('hidden');
+            
             const container = document.getElementById('options-container');
             container.innerHTML = '';
             
@@ -113,18 +140,35 @@ function startQuiz() {
                 const b = document.createElement('button');
                 b.className = 'option-btn';
                 b.innerText = opt;
-                b.onclick = () => {
-                    if(idx === qData.correct) score += 10;
-                    currentQuestion++;
-                    if(currentQuestion < questions.length) {
-                        showQuestion();
-                    } else {
-                        showResult();
-                    }
-                };
+                b.onclick = () => checkAnswer(idx, b);
                 container.appendChild(b);
             });
-            document.getElementById('progress').style.width = `${(currentQuestion / questions.length) * 100}%`;
+            document.getElementById('progress').style.width = `${(currentIdx / 10) * 100}%`;
+        }
+
+        function checkAnswer(idx, btn) {
+            if (answered) return;
+            answered = true;
+            const qData = questions[currentIdx];
+            const feedbackText = document.getElementById('feedback-text');
+            const btns = document.querySelectorAll('.option-btn');
+
+            if (idx === qData.correct) {
+                score += 10;
+                btn.classList.add('correct');
+                feedbackText.innerHTML = `<b>✅ 答對了！</b><br>${qData.reason}`;
+            } else {
+                btn.classList.add('wrong');
+                btns[qData.correct].classList.add('correct');
+                feedbackText.innerHTML = `<b>❌ 答錯了...</b><br>正確答案是：${qData.a[qData.correct]}<br><small>${qData.reason}</small>`;
+            }
+            document.getElementById('feedback-area').classList.remove('hidden');
+        }
+
+        function goToNextQuestion() {
+            currentIdx++;
+            if (currentIdx < 10) showQuestion();
+            else showResult();
         }
 
         function showResult() {
@@ -132,11 +176,11 @@ function startQuiz() {
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
             
-            if(score >= 60) {
-                document.getElementById('result-msg').innerText = "太棒了！您對合作社非常了解！";
+            if (score >= 60) {
+                document.getElementById('result-msg').innerText = "太棒了！恭喜獲得抽獎資格。";
                 document.getElementById('lottery-form').classList.remove('hidden');
             } else {
-                document.getElementById('result-msg').innerText = "正確率未達 60%，無法參加抽獎，再試一次吧！";
+                document.getElementById('result-msg').innerText = "哎呀，差一點點，再挑戰一次吧！";
                 document.getElementById('retry-btn').classList.remove('hidden');
             }
         }
@@ -145,35 +189,22 @@ function startQuiz() {
             const name = document.getElementById('user-name').value;
             const id = document.getElementById('user-id').value;
             const btn = document.getElementById('submit-btn');
-
-            if (!name || !id) {
-                alert("請完整填寫姓名與社員編號");
-                return;
-            }
-
+            if (!name || !id) { alert("請填寫姓名與編號"); return; }
             btn.disabled = true;
-            btn.innerText = "資料傳送中...";
+            btn.innerText = "傳送中...";
 
-            // 使用 no-cors 模式確保即使有 CORS 限制也能成功送出資料
             fetch(scriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
-                cache: 'no-cache',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name, id: id, score: score })
-            })
-            .then(() => {
-                alert("資料已成功記錄，祝您中獎！");
+            }).then(() => {
+                alert("提交成功！");
                 location.reload();
-            })
-            .catch(error => {
-                console.error('Error!', error);
-                alert("送出完畢！(若試算表未顯示請檢查部署權限)");
+            }).catch(() => {
+                alert("提交完成！");
                 location.reload();
             });
         }
     </script>
 </body>
-
 </html>
-
