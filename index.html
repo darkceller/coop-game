@@ -5,98 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>合作社教育知識挑戰賽</title>
     <style>
-        :root {
-            --primary-color: #2e7d32;
-            --secondary-color: #4caf50;
-            --bg-color: #f1f8e9;
-            --text-color: #333;
-            --white: #ffffff;
-        }
-
-        body {
-            font-family: "Microsoft JhengHei", sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100-vh;
-            padding: 20px;
-        }
-
-        .container {
-            background-color: var(--white);
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
+        :root { --primary-color: #2e7d32; --secondary-color: #4caf50; --bg-color: #f1f8e9; --text-color: #333; --white: #ffffff; }
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        .container { background-color: var(--white); width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
         .hidden { display: none !important; }
-
         h1 { color: var(--primary-color); margin-bottom: 20px; }
-        p { line-height: 1.6; }
-
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 20px;
-            width: 100%;
-        }
-
+        .btn { background-color: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-size: 16px; cursor: pointer; transition: background 0.3s; margin-top: 20px; width: 100%; }
         .btn:hover { background-color: var(--secondary-color); }
-
-        /* Quiz Styles */
-        .option-btn {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            background: none;
-            cursor: pointer;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-
+        .option-btn { display: block; width: 100%; text-align: left; padding: 15px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 10px; background: none; cursor: pointer; font-size: 15px; }
         .option-btn:hover { border-color: var(--secondary-color); background-color: #f9fff9; }
-
-        /* Form Styles */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #eee;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--secondary-color);
-            width: 0%;
-            border-radius: 4px;
-            transition: width 0.3s;
-        }
-
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .progress-bar { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 20px; }
+        .progress-fill { height: 100%; background: var(--secondary-color); width: 0%; border-radius: 4px; transition: width 0.3s; }
         .score-display { font-size: 48px; font-weight: bold; color: var(--primary-color); }
     </style>
 </head>
@@ -112,7 +32,7 @@
         <div id="quiz-screen" class="hidden">
             <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
             <p id="question-number" style="color: #666;"></p>
-            <h3 id="question-text">題目載入中...</h3>
+            <h3 id="question-text">載入中...</h3>
             <div id="options-container"></div>
         </div>
 
@@ -120,21 +40,21 @@
             <h2>挑戰結束</h2>
             <div class="score-display" id="final-score">0</div>
             <p id="result-msg"></p>
-            
             <div id="lottery-form" class="hidden">
                 <hr>
                 <h3>🎁 恭喜獲得抽獎資格</h3>
-                <p>請填寫基本資料以利中獎聯繫：</p>
                 <input type="text" id="user-name" placeholder="真實姓名" required>
-                <input type="text" id="user-id" placeholder="社員編號 (數字)" pattern="\d*" required>
-                <button class="btn" onclick="submitForm()">提交資料</button>
+                <input type="text" id="user-id" placeholder="社員編號 (數字)" required>
+                <button class="btn" id="submit-btn" onclick="submitForm()">提交資料</button>
             </div>
-
             <button id="retry-btn" class="btn hidden" onclick="location.reload()">重新挑戰</button>
         </div>
     </div>
 
     <script>
+        // --- 請在此處填入你正確的 GAS 網址 (記得結尾必須是 /exec) ---
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwe1pa3bClEhXZURY8G586Za8C4MAeg8Fzw__W0AT25eG-4kEKxTLj5kXfIyMmjZKgipw/exec'; 
+
         const questions = [
             { q: "合作社的第一項原則是？", a: ["公開與自願的社員制", "一人一票制", "盈餘全數分紅", "政府全額補助"], correct: 0 },
             { q: "在合作社的民主管理中，投票權通常如何計算？", a: ["按出資比例", "一人一票", "按年資", "按學歷"], correct: 1 },
@@ -161,78 +81,64 @@
             const qData = questions[currentQuestion];
             document.getElementById('question-number').innerText = `第 ${currentQuestion + 1} / 10 題`;
             document.getElementById('question-text').innerText = qData.q;
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-            
-            qData.a.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => handleAnswer(index);
-                optionsContainer.appendChild(btn);
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            qData.a.forEach((opt, idx) => {
+                const b = document.createElement('button');
+                b.className = 'option-btn';
+                b.innerText = opt;
+                b.onclick = () => {
+                    if(idx === qData.correct) score += 10;
+                    currentQuestion++;
+                    if(currentQuestion < questions.length) showQuestion();
+                    else showResult();
+                };
+                container.appendChild(b);
             });
-
             document.getElementById('progress').style.width = `${(currentQuestion / 10) * 100}%`;
-        }
-
-        function handleAnswer(choice) {
-            if (choice === questions[currentQuestion].correct) {
-                score += 10;
-            }
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                showQuestion();
-            } else {
-                showResult();
-            }
         }
 
         function showResult() {
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
-
-            if (score >= 60) {
-                document.getElementById('result-msg').innerText = "太棒了！您對合作社非常了解！";
+            if(score >= 60) {
+                document.getElementById('result-msg').innerText = "太棒了！恭喜獲得抽獎資格。";
                 document.getElementById('lottery-form').classList.remove('hidden');
             } else {
-                document.getElementById('result-msg').innerText = "再接再厲！正確率未達 60%，無法參加抽獎。";
+                document.getElementById('result-msg').innerText = "正確率未達 60%，請再試一次！";
                 document.getElementById('retry-btn').classList.remove('hidden');
             }
         }
 
-       function submitForm() {
-    const name = document.getElementById('user-name').value;
-    const id = document.getElementById('user-id').value;
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwe1pa3bClEhXZURY8G586Za8C4MAeg8Fzw__W0AT25eG-4kEKxTLj5kXfIyMmjZKgipw/exec;
+        function submitForm() {
+            const name = document.getElementById('user-name').value;
+            const id = document.getElementById('user-id').value;
+            const btn = document.getElementById('submit-btn');
 
-    if (!name || !id) {
-        alert("請完整填寫姓名與社員編號");
-        return;
-    }
+            if (!name || !id) { alert("請填寫完整資訊"); return; }
+            
+            btn.disabled = true;
+            btn.innerText = "傳送中...";
 
-    // 顯示讀取中，防止重複點擊
-    const btn = event.target;
-    btn.disabled = true;
-    btn.innerText = "資料上傳中...";
-
-    // 請將 submitForm 函數內部的 fetch 改成這樣：
-fetch(scriptURL, {
-    method: 'POST',
-    mode: 'no-cors', // 加入這行可以繞過 CORS 報錯
-    cache: 'no-cache',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name, id: id, score: score })
-})
-.then(() => {
-    alert("資料已成功記錄，祝您中獎！");
-    location.reload();
-})
-.catch(error => {
-    console.error('Error!', error);
-    alert("送出成功！"); // no-cors 模式下可能會進 catch 但其實資料已送出
-    location.reload();
-});
+            // 使用 no-cors 模式確保即使跨網域也能送出資料
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, id: id, score: score })
+            })
+            .then(() => {
+                alert("資料已傳送！祝您中獎。");
+                location.reload();
+            })
+            .catch(e => {
+                console.error(e);
+                alert("傳送完畢！");
+                location.reload();
+            });
+        }
     </script>
 </body>
 </html>
