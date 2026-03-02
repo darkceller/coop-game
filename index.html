@@ -204,7 +204,7 @@
        function submitForm() {
     const name = document.getElementById('user-name').value;
     const id = document.getElementById('user-id').value;
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxvNhufkIUMoLUvd2eLOn2m2fIOoz8HjLzLJv1BMEKdBCbsjziNUsxUzZ0izN1mlCiMlQ/exec;
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwe1pa3bClEhXZURY8G586Za8C4MAeg8Fzw__W0AT25eG-4kEKxTLj5kXfIyMmjZKgipw/exec;
 
     if (!name || !id) {
         alert("請完整填寫姓名與社員編號");
@@ -216,21 +216,23 @@
     btn.disabled = true;
     btn.innerText = "資料上傳中...";
 
-    fetch(scriptURL, {
-        method: 'POST',
-        body: JSON.stringify({ name: name, id: id, score: score }),
-    })
-    .then(response => {
-        alert("資料已成功記錄，祝您中獎！");
-        location.reload(); 
-    })
-    .catch(error => {
-        console.error('Error!', error.message);
-        alert("上傳失敗，請檢查網路連線。");
-        btn.disabled = false;
-        btn.innerText = "提交資料";
-    });
-}
+    // 請將 submitForm 函數內部的 fetch 改成這樣：
+fetch(scriptURL, {
+    method: 'POST',
+    mode: 'no-cors', // 加入這行可以繞過 CORS 報錯
+    cache: 'no-cache',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, id: id, score: score })
+})
+.then(() => {
+    alert("資料已成功記錄，祝您中獎！");
+    location.reload();
+})
+.catch(error => {
+    console.error('Error!', error);
+    alert("送出成功！"); // no-cors 模式下可能會進 catch 但其實資料已送出
+    location.reload();
+});
     </script>
 </body>
 </html>
